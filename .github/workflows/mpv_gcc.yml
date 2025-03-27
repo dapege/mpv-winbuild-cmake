@@ -117,7 +117,7 @@ jobs:
       - name: Packaging mpv
         run: |
           mkdir -p release_$BIT
-          rm -rf build_$BIT/mpv-debug*; ninja -C build_$BIT mpv-packaging; mv build_$BIT/mpv*.7z release_$BIT
+          rm -rf build_$BIT/mpv-debug*; ninja -C build_$BIT mpv-packaging; mv build_$BIT/mpv*.7z release_$BIT; cp build_$BIT/packages/mpv-release-prefix/src/mpv-release-build/*.dll release_$BIT
 
       - name: Copying ffmpeg
         run: |
@@ -144,6 +144,12 @@ jobs:
         with:
           name: mpv-${{ matrix.bit }}
           path: release_${{ matrix.bit }}/mpv-${{ env.arch }}*
+
+      - name: Uploading ${{ matrix.bit }} dll
+        uses: actions/upload-artifact@master
+        with:
+          name: mpv-${{ matrix.bit }}-dll
+          path: release_${{ matrix.bit }}/*.dll
 
       - name: Cleaning build directory
         if: always()
